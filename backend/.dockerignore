@@ -1,0 +1,27 @@
+# Build outputs
+target/
+*.jar
+
+# Git / Vercel / IDE files
+.git/
+.gitignore
+.vercel/
+.idea/
+.vscode/
+
+# Archives / logs / OS files
+*.zip
+*.log
+.DS_Store
+Thumbs.db
+
+# Local environment / secrets
+.env
+.env.*
+
+# Maven local cache and generated files
+.mvn/wrapper/maven-wrapper.jar
+
+# Temporary files
+*.tmp
+*.temp

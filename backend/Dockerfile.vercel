@@ -1,0 +1,27 @@
+# NirmaanSetu Spring Boot backend service for Vercel Services.
+# The service root is /backend, so all COPY paths are backend-relative.
+
+FROM maven:3.9-eclipse-temurin-21 AS build
+WORKDIR /app
+
+# Keep dependency resolution cacheable and deterministic.
+COPY pom.xml ./
+RUN mvn -B -DskipTests dependency:go-offline
+
+COPY src ./src
+RUN mvn -B -DskipTests clean package
+
+FROM eclipse-temurin:21-jre-jammy AS runtime
+WORKDIR /app
+
+COPY --from=build /app/target/nirmaansetu-1.0.0.jar /app/nirmaansetu.jar
+
+# Vercel's container runtime defaults to port 80. The platform can override
+# PORT at runtime; 80 is the safe container fallback while the normal local
+# Spring Boot fallback remains 8080 outside this image.
+ENV PORT=80
+ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75 -XX:InitialRAMPercentage=25 -Djava.security.egd=file:/dev/./urandom"
+
+EXPOSE 80
+
+CMD ["java", "-jar", "/app/nirmaansetu.jar"]
